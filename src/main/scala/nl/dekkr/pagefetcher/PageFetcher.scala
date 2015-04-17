@@ -12,14 +12,14 @@ import scalaj.http.Http
 object PageFetcher {
 
   def getPage(request: PageUrl) : StandardRoute = {
-    // TODO Check for the page in the cache first, using the maxAge parameter
+    // TODO Check for the page in the cache first, using the maxAge parameter [Issue #2]
     Try(PageFetcher.pageContent(request.url).charset("UTF-8")) match {
       case Success(content) =>
         try {
           val result =
           request.raw match {
             case Some(raw) if !raw =>
-              // TODO clean up the content, with some html tidy library
+              // TODO clean up the content, with some html tidy library [Issue #4]
               content.asString
             case _ =>  content.asString
           }

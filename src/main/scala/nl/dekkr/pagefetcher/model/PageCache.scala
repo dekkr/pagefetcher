@@ -13,5 +13,5 @@ case class PageCache(id: Option[Int] = None, uri: String, content: Option[String
 case class PageUrl(url : String, maxAge : Option[Int], raw : Option[Boolean]) {
   require(!url.isEmpty, "url must not be empty")
   require(url.startsWith("http://") || url.startsWith("https://"),  "url is invalid")
-  //TODO add more comprehensive URL check
+  //TODO add more comprehensive URL check [Issue #6]
 }

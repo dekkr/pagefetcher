@@ -13,7 +13,7 @@ class FrontendServiceActor extends Actor with FrontendService {
 
 trait FrontendService extends HttpService {
 
-  // TODO add swagger annotations
+  // TODO add swagger annotations [Issue #7]
   val myRoute =
     path("") {
       get {
