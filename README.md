@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/dekkr/pagefetcher.svg?branch=master)](https://travis-ci.org/dekkr/pagefetcher)
+[![Coverage Status](https://coveralls.io/repos/dekkr/pagefetcher/badge.svg)](https://coveralls.io/r/dekkr/pagefetcher)
 # Page Fetcher
 
 A simple micro service that fetches the content of a web page.
