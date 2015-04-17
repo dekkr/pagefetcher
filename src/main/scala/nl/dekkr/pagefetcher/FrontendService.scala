@@ -1,0 +1,44 @@
+package nl.dekkr.pagefetcher
+
+import akka.actor.Actor
+import nl.dekkr.pagefetcher.model.PageUrl
+import spray.http.MediaTypes._
+import spray.routing._
+
+class FrontendServiceActor extends Actor with FrontendService {
+  def actorRefFactory = context
+
+  def receive = runRoute(myRoute)
+}
+
+trait FrontendService extends HttpService {
+
+  // TODO add swagger annotations
+  val myRoute =
+    path("") {
+      get {
+        respondWithMediaType(`text/html`) {
+          complete {
+            <html>
+              <head>
+                <title>Page Fetcher by DekkR projects</title>
+              </head>
+              <body>
+                <h1>Page Fetcher</h1>
+                <p>Ready to serve a page.</p>
+              </body>
+            </html>
+          }
+        }
+      }
+    } ~
+      path("v1" / "page") {
+        get {
+          parameters(('url.as[String], 'maxAge.as[Option[Int]], 'raw.as[Option[Boolean]])).as(PageUrl) { pageRequest =>
+            respondWithMediaType(`text/html`) {
+              PageFetcher.getPage(pageRequest)
+            }
+          }
+        }
+      }
+}
