@@ -36,7 +36,7 @@ trait FrontendService extends HttpService {
         get {
           parameters(('url.as[String], 'maxAge.as[Option[Int]], 'raw.as[Option[Boolean]])).as(PageUrl) { pageRequest =>
             respondWithMediaType(`text/html`) {
-              PageFetcher.getPage(pageRequest)
+              BackendService.getPage(pageRequest)
             }
           }
         }

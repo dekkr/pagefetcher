@@ -16,14 +16,15 @@ libraryDependencies ++= {
   val akkaV = "2.3.9"
   val sprayV = "1.3.3"
   Seq(
-    "io.spray"            %%  "spray-can"     % sprayV,
-    "io.spray"            %%  "spray-routing" % sprayV,
-    "io.spray"            %%  "spray-testkit" % sprayV  % "test",
-    "com.typesafe.akka"   %%  "akka-actor"    % akkaV,
-    "com.typesafe.akka"   %%  "akka-testkit"  % akkaV   % "test",
-    "org.jsoup"            % "jsoup"          % "1.7.2",
-    "org.scalaj"          %% "scalaj-http"    % "0.3.16",
-    "org.specs2"          %%  "specs2-core"   % "2.3.13" % "test"
+    "io.spray"            %%  "spray-can"          % sprayV,
+    "io.spray"            %%  "spray-routing"      % sprayV,
+    "io.spray"            %%  "spray-testkit"      % sprayV  % "test",
+    "com.typesafe.akka"   %%  "akka-actor"         % akkaV,
+    "com.typesafe.akka"   %%  "akka-testkit"       % akkaV   % "test",
+    "org.jsoup"            % "jsoup"               % "1.7.2",
+    "commons-validator"    % "commons-validator"   % "1.4.1",
+    "org.scalaj"          %% "scalaj-http"         % "0.3.16",
+    "org.specs2"          %%  "specs2-core"        % "2.3.13" % "test"
   )
 }
 

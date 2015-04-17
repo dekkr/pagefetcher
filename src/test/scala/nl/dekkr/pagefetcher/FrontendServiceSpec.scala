@@ -1,10 +1,9 @@
 package nl.dekkr.pagefetcher
 
 import org.specs2.mutable.Specification
-import spray.routing.Rejected
-import spray.testkit.Specs2RouteTest
+import spray.http.StatusCodes._
 import spray.http._
-import StatusCodes._
+import spray.testkit.Specs2RouteTest
 
 class FrontendServiceSpec extends Specification with Specs2RouteTest with FrontendService {
   def actorRefFactory = system
@@ -31,24 +30,43 @@ class FrontendServiceSpec extends Specification with Specs2RouteTest with Fronte
     }
 
     "fail on a non-existing host " in {
-      Get("/v1/page?url=http://dekkr.nl.invalid")  ~> myRoute ~> check {
+      Get("/v1/page?url=http://not.there.dekkr.nl") ~> myRoute ~> check {
         status === NotFound
         responseAs[String] must contain("Host not found")
       }
     }
 
+    "fail on a missing url " in {
+      Get("/v1/page") ~> myRoute ~> check {
+        handled must beFalse
+      }
+    }
+
     "successfully fetch a page " in {
-      Get("/v1/page?url=http://google.com")  ~> myRoute ~> check {
+      Get("/v1/page?url=https://google.com") ~> myRoute ~> check {
         responseAs[String] must contain("google")
       }
     }
 
     "fail on a non-existing page " in {
-      Get("/v1/page?url=http://www.google.com/abcedf")  ~> myRoute ~> check {
+      Get("/v1/page?url=http://www.google.com/abcedf") ~> myRoute ~> check {
         status === BadRequest
         responseAs[String] must contain("404: Not Found")
       }
     }
+
+    "fetch a page raw" in {
+      Get("/v1/page?url=http://google.com&raw=true") ~> myRoute ~> check {
+        responseAs[String] must contain("href=\"/")
+      }
+    }
+
+    "fetch a page cooked (no relative links)" in {
+      Get("/v1/page?url=http://dekkr.nl") ~> myRoute ~> check {
+        responseAs[String] must not contain "href=\"/"
+      }
+    }
+
 
   }
 }

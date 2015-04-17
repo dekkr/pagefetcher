@@ -4,7 +4,7 @@
 
 A simple micro service that fetches the content of a web page.
 
-This initial version is no more than a proxy; later editions will feature a page cache and tidying the content.
+This initial version is no more than a proxy; later editions will feature a page cache.
 
 url
  
@@ -14,6 +14,6 @@ parameters
 
 > url=http://www.google.com  \[valid uri, required]
 
-> maxAge=60                  \[number of minutes, Optional, not implemented] 
+> maxAge=60                  \[number of minutes, Optional, defaults to 1440 (1 day)] 
 
-> raw=false                  \[processing of the page, Optional, not implemented]
+> raw=true                  \[processing of the page, Optional, defaults to false]
