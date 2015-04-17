@@ -1,6 +1,7 @@
 package nl.dekkr.pagefetcher.model
 
 import java.time.OffsetDateTime
+import org.apache.commons.validator.routines.UrlValidator
 
 /**
  * Entity for caching a page
@@ -10,8 +11,7 @@ case class PageCache(id: Option[Int] = None, uri: String, content: Option[String
 /*
  * Entity for the page request
  */
-case class PageUrl(url : String, maxAge : Option[Int], raw : Option[Boolean]) {
+case class PageUrl(url : String, maxAge : Option[Int] = Some(1440), raw : Option[Boolean] = None) {
   require(!url.isEmpty, "url must not be empty")
-  require(url.startsWith("http://") || url.startsWith("https://"),  "url is invalid")
-  //TODO add more comprehensive URL check [Issue #6]
+  require(new UrlValidator(Array("http","https")).isValid(url), "url is invalid")
 }
