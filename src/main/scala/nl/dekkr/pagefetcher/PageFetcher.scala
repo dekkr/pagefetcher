@@ -1,6 +1,9 @@
 package nl.dekkr.pagefetcher
 
 import nl.dekkr.pagefetcher.model.PageUrl
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 import spray.http.StatusCodes
 import spray.routing.StandardRoute
 import spray.routing.directives.RouteDirectives
@@ -18,10 +21,11 @@ object PageFetcher {
         try {
           val result =
           request.raw match {
-            case Some(raw) if !raw =>
-              // TODO clean up the content, with some html tidy library [Issue #4]
-              content.asString
-            case _ =>  content.asString
+            case Some(raw) if raw => content.asString
+            case _ =>
+              val htmlParsed = Jsoup.parse(content.asString).normalise()
+              htmlParsed.setBaseUri(request.url)
+              absolutePaths(absolutePaths(htmlParsed,"src"),"href").html()
           }
           RouteDirectives.complete((StatusCodes.OK, result))
         }
@@ -38,6 +42,15 @@ object PageFetcher {
     }
   }
 
+  private def absolutePaths(htmlParsed : Document, attribute : String) : Document = {
+    val elements: Elements = htmlParsed.getElementsByAttribute(attribute)
+    val itr = elements.iterator()
+    while (itr.hasNext) {
+      val element = itr.next()
+      element.attr(attribute, element.attr(s"abs:$attribute"))
+    }
+    htmlParsed
+  }
 
   private val USER_AGENT: String = "Mozilla/5.0)"
 

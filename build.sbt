@@ -21,6 +21,7 @@ libraryDependencies ++= {
     "io.spray"            %%  "spray-testkit" % sprayV  % "test",
     "com.typesafe.akka"   %%  "akka-actor"    % akkaV,
     "com.typesafe.akka"   %%  "akka-testkit"  % akkaV   % "test",
+    "org.jsoup"            % "jsoup"          % "1.7.2",
     "org.scalaj"          %% "scalaj-http"    % "0.3.16",
     "org.specs2"          %%  "specs2-core"   % "2.3.13" % "test"
   )
