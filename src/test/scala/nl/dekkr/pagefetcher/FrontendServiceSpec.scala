@@ -2,7 +2,6 @@ package nl.dekkr.pagefetcher
 
 import org.specs2.mutable.Specification
 import spray.http.StatusCodes._
-import spray.http._
 import spray.testkit.Specs2RouteTest
 
 class FrontendServiceSpec extends Specification with Specs2RouteTest with FrontendService {
