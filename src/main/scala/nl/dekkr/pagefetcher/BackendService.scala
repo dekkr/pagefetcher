@@ -14,7 +14,7 @@ import scalaj.http.Http
 object BackendService {
 
   def getPage(request: PageUrl): StandardRoute = {
-    Storage.getFromCache(request) match {
+    Storage.read(request) match {
       case Some(page) =>
         page.content match {
           case Some(content) =>
@@ -31,13 +31,14 @@ object BackendService {
     Try(BackendService.pageContent(request.url).charset("UTF-8")) match {
       case Success(content) =>
         try {
-          Storage.storeInCache(request.url, Some(content.asString), raw = true)
           val result =
             request.raw match {
-              case Some(raw) if raw => content.asString
+              case Some(raw) if raw =>
+                Storage.write(request.url, Some(content.asString), raw = true)
+                content.asString
               case _ =>
                 val cleaned = cleanContent(content.asString, request.url)
-                Storage.storeInCache(request.url, Some(cleaned), raw = false)
+                Storage.write(request.url, Some(cleaned), raw = false)
                 cleaned
             }
           RouteDirectives.complete((StatusCodes.OK, result))
