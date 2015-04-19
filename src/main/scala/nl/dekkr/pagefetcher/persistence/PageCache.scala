@@ -55,7 +55,7 @@ object Storage {
           ) select entity orderBy (entity.createdAt desc) limit 1
       }
       if (res2.isEmpty) {
-        logger.info(s"miss  [url: ${request.url}] [raw: ${request.raw.get}]")
+        logger.info(s"miss  [url: ${request.url}] [raw: ${request.raw.getOrElse(false)}]")
         None
       } else {
         logger.info(s"hit   [url: ${res2.head.uri}] [raw: ${res2.head.raw}] [age: ${(OffsetDateTime.now().toEpochSecond - res2.head.createdAt) / 60} minutes]")
