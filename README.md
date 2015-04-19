@@ -1,19 +1,55 @@
 [![Build Status](https://travis-ci.org/dekkr/pagefetcher.svg?branch=master)](https://travis-ci.org/dekkr/pagefetcher)
-[![Coverage Status](https://coveralls.io/repos/dekkr/pagefetcher/badge.svg)](https://coveralls.io/r/dekkr/pagefetcher)
 # Page Fetcher
 
 A simple micro service that fetches the content of a web page.
+If the page already exists in the local cache, the cache page will be returned.
 
-This initial version is no more than a proxy; later editions will feature a page cache.
+The maximum age of a cached page can be specified.
 
-url
+Default, the page content is processed, to ensure it is valid HTML and all relative links are replaced by absolute links.
+This behaviour can be turned off.
+
+## Usage
+
+Example url
  
-> http://localhost:8080/v1/page?
+> http://localhost:8080/v1/page?url=http://www.google.com&maxAge=60&raw=true
 
-parameters
+parameter | example value | description
+----------|---------------|-------------
+url | url=http://www.google.com | a valid url \[required]
+maxAge | maxAge=60 | maximum age of a cache page, in minutes. \[Optional] 
+raw | raw=true  | Clean the page up, creating a valid HTML page, making all the references absoluut \[Optional, default =false]
 
-> url=http://www.google.com  \[valid uri, required]
 
-> maxAge=60                  \[number of minutes, Optional, defaults to 1440 (1 day)] 
+## Configuration
 
-> raw=true                  \[processing of the page, Optional, defaults to false]
+Example of application.conf
+
+``` json
+nl.dekkr.pagefetcher {
+  api {
+    host = "localhost"
+    port = 8080
+    timeout = 5 #seconds
+  }
+  persistence {
+    flavor = "postgres"  # postgres / mongo / prevayler / memory
+    postgres {
+      user = "postgres"
+      password = "postgres"
+      databaseName = "pagefetcher"
+      serverName = "localhost"
+      portNumber = 5432
+    }
+    mongo {
+      host = "localhost"
+      port = 27017
+      db = "db"
+      user = "mongo"
+      password = "mongo"
+    }
+  }
+}
+```
+
