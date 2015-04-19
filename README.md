@@ -2,11 +2,11 @@
 # Page Fetcher
 
 A simple micro service that fetches the content of a web page.
-If the page already exists in the local cache, the cache page will be returned.
+If the page already exists in the local cache, the cached page will be returned.
 
 The maximum age of a cached page can be specified.
 
-Default, the page content is processed, to ensure it is valid HTML and all relative links are replaced by absolute links.
+Default, the page content is processed, to ensure valid HTML is returned and all relative links are replaced by absolute links.
 This behaviour can be turned off.
 
 ## Usage
@@ -19,14 +19,14 @@ parameter | example value | description
 ----------|---------------|-------------
 url | url=http://www.google.com | a valid url \[required]
 maxAge | maxAge=60 | maximum age of a cache page, in minutes. \[Optional] 
-raw | raw=true  | Clean the page up, creating a valid HTML page, making all the references absoluut \[Optional, default =false]
+raw | raw=true  | Disable page processing \[Optional, default =false]
 
 
 ## Configuration
 
 Example of application.conf
 
-``` json
+```
 nl.dekkr.pagefetcher {
   api {
     host = "localhost"
