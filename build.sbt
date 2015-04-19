@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
   organization := "dekkR projects",
-  version := "0.1",
+  version := "0.1.9",
   scalaVersion := "2.11.6"
 )
 
@@ -10,21 +10,31 @@ lazy val root = (project in file(".")).
     name := "pagefetcher"
   )
 
-
-
 libraryDependencies ++= {
   val akkaV = "2.3.9"
   val sprayV = "1.3.3"
+  val activateVersion = "1.7"
+  val scalaLoggingVersion = "3.1.0"
+  val slf4jVersion = "1.7.10"
+  val logbackVersion = "1.1.2"
   Seq(
-    "io.spray"            %%  "spray-can"          % sprayV,
-    "io.spray"            %%  "spray-routing"      % sprayV,
-    "io.spray"            %%  "spray-testkit"      % sprayV  % "test",
-    "com.typesafe.akka"   %%  "akka-actor"         % akkaV,
-    "com.typesafe.akka"   %%  "akka-testkit"       % akkaV   % "test",
-    "org.jsoup"            % "jsoup"               % "1.7.2",
-    "commons-validator"    % "commons-validator"   % "1.4.1",
-    "org.scalaj"          %% "scalaj-http"         % "0.3.16",
-    "org.specs2"          %%  "specs2-core"        % "2.3.13" % "test"
+    "io.spray" %% "spray-can" % sprayV,
+    "io.spray" %% "spray-routing" % sprayV,
+    "io.spray" %% "spray-testkit" % sprayV % "test",
+    "com.typesafe.akka" %% "akka-actor" % akkaV,
+    "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
+    "org.jsoup" % "jsoup" % "1.7.2",
+    "commons-validator" % "commons-validator" % "1.4.1",
+    "org.scalaj" %% "scalaj-http" % "0.3.16",
+    "org.specs2" %% "specs2-core" % "2.3.13" % "test",
+    "net.fwbrasil" %% "activate-core" % activateVersion,
+    "net.fwbrasil" %% "activate-prevayler" % activateVersion,
+    "net.fwbrasil" %% "activate-jdbc" % activateVersion,
+    "net.fwbrasil" %% "activate-mongo" % activateVersion,
+    "org.postgresql" % "postgresql" % "9.2-1003-jdbc4",
+    "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
+    "org.slf4j" % "slf4j-api" % slf4jVersion,
+    "ch.qos.logback" % "logback-classic" % logbackVersion
   )
 }
 

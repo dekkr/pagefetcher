@@ -1,10 +1,13 @@
 package nl.dekkr.pagefetcher
 
+
 import org.specs2.mutable.Specification
 import spray.http.StatusCodes._
 import spray.testkit.Specs2RouteTest
 
+
 class FrontendServiceSpec extends Specification with Specs2RouteTest with FrontendService {
+
   def actorRefFactory = system
 
   "FrontendService" should {
@@ -42,6 +45,15 @@ class FrontendServiceSpec extends Specification with Specs2RouteTest with Fronte
     }
 
     "successfully fetch a page " in {
+      Get("/v1/page?url=https://google.com") ~> myRoute ~> check {
+        responseAs[String] must contain("google")
+      }
+    }
+
+    "successfully fetch a page a second time, hitting the cache" in {
+      Get("/v1/page?url=https://google.com") ~> myRoute ~> check {
+        responseAs[String] must contain("google")
+      }
       Get("/v1/page?url=https://google.com") ~> myRoute ~> check {
         responseAs[String] must contain("google")
       }
