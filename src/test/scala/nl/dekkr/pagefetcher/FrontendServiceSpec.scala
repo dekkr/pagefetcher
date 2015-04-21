@@ -1,6 +1,7 @@
 package nl.dekkr.pagefetcher
 
 
+import nl.dekkr.pagefetcher.services.FrontendService
 import org.specs2.mutable.Specification
 import spray.http.StatusCodes._
 import spray.testkit.Specs2RouteTest

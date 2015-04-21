@@ -1,15 +1,8 @@
-package nl.dekkr.pagefetcher
+package nl.dekkr.pagefetcher.services
 
-import akka.actor.Actor
 import nl.dekkr.pagefetcher.model.PageUrl
 import spray.http.MediaTypes._
 import spray.routing._
-
-class FrontendServiceActor extends Actor with FrontendService {
-  def actorRefFactory = context
-
-  def receive = runRoute(myRoute)
-}
 
 trait FrontendService extends HttpService {
 

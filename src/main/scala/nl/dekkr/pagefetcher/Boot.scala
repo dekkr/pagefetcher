@@ -1,24 +1,24 @@
 package nl.dekkr.pagefetcher
 
-import akka.actor.{ActorSystem, Props}
-import akka.io.IO
 import com.typesafe.config.ConfigFactory
-import spray.can.Http
-import akka.pattern.ask
-import akka.util.Timeout
+import com.typesafe.scalalogging.Logger
+import nl.dekkr.pagefetcher.actors.{BootedCore, CoreActors, RemoveOldPages}
+import org.slf4j.LoggerFactory
+
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
-object Boot extends App {
+object Boot extends App with BootedCore with CoreActors {
 
-  // we need an ActorSystem to host our application in
-  implicit val system = ActorSystem("on-spray-can")
+  private val logger = Logger(LoggerFactory.getLogger("[PageFetcher]"))
 
-  // create and start our service actor
-  val service = system.actorOf(Props[FrontendServiceActor], "page-fetch-service")
+  ConfigFactory.load().getInt("nl.dekkr.pagefetcher.persistence.maxStorageAge") match {
+    case hours if hours > 0 =>
+      logger.info(s"Automatic cleanup of content older the $hours hours")
+      system.scheduler.schedule(10 seconds, 60 minutes, persistence, RemoveOldPages(hours))
+    case _ =>
+      logger.info("Automatic cleanup disabled")
+  }
 
-  implicit val timeout = Timeout(ConfigFactory.load().getInt("nl.dekkr.pagefetcher.api.timeout").seconds)
-  // start a new HTTP server on port 8080 with our service actor as the handler
-  IO(Http) ? Http.Bind(service,
-    interface = ConfigFactory.load().getString("nl.dekkr.pagefetcher.api.host"),
-    port = ConfigFactory.load().getInt("nl.dekkr.pagefetcher.api.port"))
 }
