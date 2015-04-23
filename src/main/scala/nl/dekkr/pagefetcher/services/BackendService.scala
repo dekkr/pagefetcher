@@ -39,6 +39,7 @@ object BackendService {
                 content.asString
               case _ =>
                 val cleaned = cleanContent(content.asString, request.url)
+                //persistence ! StorePage(request.url, Some(cleaned), raw = false)
                 StorageService.write(request.url, Some(cleaned), raw = false)
                 cleaned
             }
