@@ -33,6 +33,7 @@ nl.dekkr.pagefetcher {
     port = 8080
   }
   persistence {
+    maxStorageAge = 4 #in hours; use 0 to disable automatic purging of old content
     flavor = "postgres"  # postgres / mongo / prevayler / memory
     postgres {
       user = "postgres"
