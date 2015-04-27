@@ -1,5 +1,7 @@
 package nl.dekkr.pagefetcher.services
 
+import akka.actor.ActorRef
+import nl.dekkr.pagefetcher.actors.StorePage
 import nl.dekkr.pagefetcher.model._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -7,43 +9,43 @@ import org.jsoup.nodes.Document
 import scala.util.{Failure, Success, Try}
 import scalaj.http.Http
 
-object BackendService {
+class BackendService(implicit val persistence: ActorRef) extends BackendSystem {
+
 
   private val USER_AGENT: String = "Mozilla/5.0)"
+  private val CHARSET: String = "UTF-8"
 
-  def getPage(request: PageUrl): BackendResult = {
+  def getContent(request: PageUrl): BackendResult = {
     StorageService.read(request) match {
       case Some(page) =>
         page.content match {
           case Some(content) => ExistingContent(content)
           case None => NoContent()
         }
-      case None => fetchPage(request)
+      case None =>
+        Try(this.pageContent(request.url).charset(CHARSET)) match {
+          case Success(content) =>
+            processRequest(request, content)
+          case Failure(e) => Error(s"${e.getMessage}")
+        }
     }
   }
 
-  private def fetchPage(request: PageUrl): BackendResult = {
-    Try(BackendService.pageContent(request.url).charset("UTF-8")) match {
-      case Success(content) =>
-        try {
-          val result =
-            request.raw match {
-              case Some(raw) if raw =>
-                StorageService.write(request.url, Some(content.asString), raw = true)
-                content.asString
-              case _ =>
-                val cleaned = cleanContent(content.asString, request.url)
-                //persistence ! StorePage(request.url, Some(cleaned), raw = false)
-                StorageService.write(request.url, Some(cleaned), raw = false)
-                cleaned
-            }
-          NewContent(result)
-        }
-        catch {
-          case e1: java.net.UnknownHostException => UnknownHost(request.url)
-          case e3: Exception => Error(s"${e3.getMessage} - ${e3.getCause}")
-        }
-      case Failure(e) => Error(s"${e.getMessage}")
+  private def processRequest(request: PageUrl, content: Http.Request): BackendResult = {
+    val rawRequested = request.raw.getOrElse(false)
+    try {
+      val rawContent = content.asString
+      val result = if (rawRequested) {
+        rawContent
+      } else {
+        cleanContent(rawContent, request.url)
+      }
+      persistence ! StorePage(url = request.url, Some(result), raw = rawRequested)
+      NewContent(result)
+    }
+    catch {
+      case e1: java.net.UnknownHostException => UnknownHost(request.url)
+      case e3: Exception => Error(s"${e3.getMessage} - ${e3.getCause}")
     }
   }
 

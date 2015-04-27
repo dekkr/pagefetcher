@@ -8,6 +8,7 @@ import nl.dekkr.pagefetcher.model.{NoContent, _}
 import scala.language.implicitConversions
 
 trait FrontendService {
+  implicit val backend: BackendSystem
 
   val requestHandler: HttpRequest => HttpResponse = {
     case HttpRequest(GET, Uri.Path("/"), _, _, _) =>
@@ -28,7 +29,7 @@ trait FrontendService {
       uri.query.get("url") match {
         case Some(url) =>
           try {
-            BackendService.getPage(uri) match {
+            backend.getContent(uri) match {
               case ExistingContent(content) => HttpResponse(entity = HttpEntity(MediaTypes.`text/html`, content))
               case NewContent(content) => HttpResponse(entity = HttpEntity(MediaTypes.`text/html`, content))
               case NoContent() => HttpResponse(NotFound, entity = "Not found")

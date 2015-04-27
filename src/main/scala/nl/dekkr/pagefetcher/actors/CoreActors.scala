@@ -1,10 +1,6 @@
 package nl.dekkr.pagefetcher.actors
 
 import akka.actor.Props
-import akka.util.Timeout
-import com.typesafe.config.ConfigFactory
-
-import scala.concurrent.duration._
 
 /**
  * This trait contains the nl.dekkr.pagefetcher.actors that make up our application; it can be mixed in with
@@ -12,8 +8,6 @@ import scala.concurrent.duration._
  */
 trait CoreActors {
   this: Core =>
-  val persistence = system.actorOf(Props[PersistenceActor], "persistence")
-
-  implicit val timeout = Timeout(ConfigFactory.load().getInt("nl.dekkr.pagefetcher.api.timeout").seconds)
+  implicit val persistence = system.actorOf(Props[PersistenceActor], "persistence")
 
 }

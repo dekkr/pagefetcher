@@ -31,7 +31,6 @@ nl.dekkr.pagefetcher {
   api {
     interface = "localhost"
     port = 8080
-    timeout = 5 #seconds
   }
   persistence {
     flavor = "postgres"  # postgres / mongo / prevayler / memory

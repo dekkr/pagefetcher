@@ -1,11 +1,9 @@
 package nl.dekkr.pagefetcher
-
-
-import nl.dekkr.pagefetcher.services.FrontendService
 import org.specs2.mutable.Specification
 
 
-class FrontendServiceSpec extends Specification with FrontendService {
+class FrontendServiceSpec extends Specification {
+  //with FrontendService {
 
   /*
   def actorRefFactory = system
