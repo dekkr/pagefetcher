@@ -2,9 +2,8 @@ package nl.dekkr.pagefetcher
 
 import nl.dekkr.pagefetcher.model.PageUrl
 import org.specs2.mutable.Specification
-import spray.testkit.Specs2RouteTest
 
-class ModelSpec extends Specification with Specs2RouteTest {
+class ModelSpec extends Specification {
 
   "Model" should {
 
