@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dekkr/pagefetcher.svg?branch=master)](https://travis-ci.org/dekkr/pagefetcher) [![Codacy Badge](https://www.codacy.com/project/badge/a8ed6feb2af84ec5b2c276d90b122b03)](https://www.codacy.com/app/github_8/pagefetcher)
+[![Build Status](https://travis-ci.org/dekkr/pagefetcher.svg?branch=master)](https://travis-ci.org/dekkr/pagefetcher) 
 # Page Fetcher
 
 A simple micro service that fetches the content of a web page.
