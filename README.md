@@ -29,7 +29,7 @@ Example of application.conf
 ```
 nl.dekkr.pagefetcher {
   api {
-    host = "localhost"
+    interface = "localhost"
     port = 8080
     timeout = 5 #seconds
   }

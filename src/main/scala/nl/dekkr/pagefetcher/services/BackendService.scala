@@ -1,11 +1,8 @@
 package nl.dekkr.pagefetcher.services
 
-import nl.dekkr.pagefetcher.model.PageUrl
+import nl.dekkr.pagefetcher.model._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import spray.http.StatusCodes
-import spray.routing.StandardRoute
-import spray.routing.directives.RouteDirectives
 
 import scala.util.{Failure, Success, Try}
 import scalaj.http.Http
@@ -14,21 +11,18 @@ object BackendService {
 
   private val USER_AGENT: String = "Mozilla/5.0)"
 
-  def getPage(request: PageUrl): StandardRoute = {
+  def getPage(request: PageUrl): BackendResult = {
     StorageService.read(request) match {
       case Some(page) =>
         page.content match {
-          case Some(content) =>
-            RouteDirectives.complete((StatusCodes.OK, content))
-          case None =>
-            RouteDirectives.complete(StatusCodes.NoContent)
+          case Some(content) => ExistingContent(content)
+          case None => NoContent()
         }
-      case None =>
-        fetchPage(request)
+      case None => fetchPage(request)
     }
   }
 
-  private def fetchPage(request: PageUrl): StandardRoute = {
+  private def fetchPage(request: PageUrl): BackendResult = {
     Try(BackendService.pageContent(request.url).charset("UTF-8")) match {
       case Success(content) =>
         try {
@@ -43,16 +37,13 @@ object BackendService {
                 StorageService.write(request.url, Some(cleaned), raw = false)
                 cleaned
             }
-          RouteDirectives.complete((StatusCodes.OK, result))
+          NewContent(result)
         }
         catch {
-          case e1: java.net.UnknownHostException =>
-            RouteDirectives.complete((StatusCodes.NotFound, s"Host not found: ${request.url}"))
-          case e3: Exception =>
-            RouteDirectives.complete((StatusCodes.BadRequest, s"${e3.getMessage} - ${e3.getCause}"))
+          case e1: java.net.UnknownHostException => UnknownHost(request.url)
+          case e3: Exception => Error(s"${e3.getMessage} - ${e3.getCause}")
         }
-      case Failure(e) =>
-        RouteDirectives.complete((StatusCodes.BadRequest, e.getMessage))
+      case Failure(e) => Error(s"${e.getMessage}")
     }
   }
 

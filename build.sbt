@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
   organization := "dekkR projects",
-  version := "0.2.0",
+  version := "0.3.0",
   scalaVersion := "2.11.6"
 )
 
@@ -11,18 +11,21 @@ lazy val root = (project in file(".")).
   )
 
 libraryDependencies ++= {
-  val akkaV = "2.3.9"
+  val akkaV = "2.3.10"
+  val akkaStreamV = "1.0-M5"
   val sprayV = "1.3.3"
   val activateVersion = "1.7"
   val scalaLoggingVersion = "3.1.0"
   val slf4jVersion = "1.7.10"
   val logbackVersion = "1.1.2"
   Seq(
-    "io.spray" %% "spray-can" % sprayV,
-    "io.spray" %% "spray-routing" % sprayV,
-    "io.spray" %% "spray-testkit" % sprayV % "test",
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
+    "com.typesafe.akka" %% "akka-stream-experimental" % akkaStreamV,
+    "com.typesafe.akka" %% "akka-http-core-experimental" % akkaStreamV,
+    "com.typesafe.akka" %% "akka-http-experimental" % akkaStreamV,
+    "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaStreamV,
+    "com.typesafe.akka" %% "akka-http-testkit-experimental" % akkaStreamV,
     "org.jsoup" % "jsoup" % "1.7.2",
     "commons-validator" % "commons-validator" % "1.4.1",
     "org.scalaj" %% "scalaj-http" % "0.3.16",
