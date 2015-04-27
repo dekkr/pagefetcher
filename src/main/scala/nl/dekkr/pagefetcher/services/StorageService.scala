@@ -8,12 +8,11 @@ import nl.dekkr.pagefetcher.persistence.PageCache
 import nl.dekkr.pagefetcher.persistence.persistenceContext._
 import org.slf4j.LoggerFactory
 
+import scala.language.postfixOps
+
 object StorageService {
 
-  import scala.language.postfixOps
-
   private val logger = Logger(LoggerFactory.getLogger("[Page storage]"))
-
 
   def read(request: PageUrl): Option[PageCache] = {
     val notBefore: Long = request.maxAge match {

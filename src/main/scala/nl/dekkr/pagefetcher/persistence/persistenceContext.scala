@@ -9,7 +9,7 @@ import net.fwbrasil.activate.storage.relational.idiom.postgresqlDialect
 
 object persistenceContext extends ActivateContext {
 
-  var dbFlavor = ConfigFactory.load().getString("nl.dekkr.pagefetcher.persistence.flavor").toLowerCase
+  val dbFlavor = ConfigFactory.load().getString("nl.dekkr.pagefetcher.persistence.flavor").toLowerCase
 
   val storage = dbFlavor match {
     case "postgres" => new ModifiedPooledJdbcRelationalStorage {

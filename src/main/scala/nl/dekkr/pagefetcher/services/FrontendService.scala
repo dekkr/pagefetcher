@@ -57,7 +57,7 @@ trait FrontendService {
       case Some(value: String) => Some(value.toBoolean)
       case None => Some(false)
     }
-    PageUrl(url = uri.query.get("url").get, maxAge = maxAge, raw = raw)
+    PageUrl(url = uri.query.get("url").getOrElse(""), maxAge = maxAge, raw = raw)
   }
 
 }

@@ -6,6 +6,6 @@ trait StoredPage extends Entity {
   val uri: String
 
   def invariantNameMustNotBeEmpty = invariant {
-    uri != null && uri.nonEmpty
+    uri.nonEmpty
   }
 }
