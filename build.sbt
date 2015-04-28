@@ -25,9 +25,9 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http-core-experimental" % akkaStreamV,
     "com.typesafe.akka" %% "akka-http-experimental" % akkaStreamV,
     "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaStreamV,
-    "com.typesafe.akka" %% "akka-http-testkit-experimental" % akkaStreamV,
-    "org.jsoup" % "jsoup" % "1.7.2",
+    "com.typesafe.akka" %% "akka-http-testkit-experimental" % akkaStreamV % "test",
     "commons-validator" % "commons-validator" % "1.4.1",
+    "org.jsoup" % "jsoup" % "1.7.2",
     "org.scalaj" %% "scalaj-http" % "0.3.16",
     "org.specs2" %% "specs2-core" % "2.3.13" % "test",
     "net.fwbrasil" %% "activate-core" % activateVersion,
@@ -40,6 +40,8 @@ libraryDependencies ++= {
     "ch.qos.logback" % "logback-classic" % logbackVersion
   )
 }
+
+
 
 Revolver.settings
 
@@ -72,6 +74,17 @@ lsSettings
 LsKeys.tags in LsKeys.lsync := (bintray.Keys.packageLabels in bintray.Keys.bintray).value
 
 externalResolvers in LsKeys.lsync := (resolvers in bintray.Keys.bintray).value
+
+assemblyJarName in assembly := s"pagefetcher-assembly-${version.value}.jar"
+
+assemblyMergeStrategy in assembly := {
+  case x if x.contains("org/apache/commons/collections") => MergeStrategy.first
+  case x if x.contains("com/esotericsoftware/minlog/") => MergeStrategy.first
+  case x if x.contains("org/xmlpull/v1/XmlPullParser") => MergeStrategy.first
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
 
 pomExtra :=
   <url>http://dekkr.nl</url>

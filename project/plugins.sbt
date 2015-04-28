@@ -7,6 +7,8 @@ addSbtPlugin("me.lessis" % "bintray-sbt" % "0.2.1")
 
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.3.2")
 
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")
+
 addSbtPlugin("me.lessis" % "ls-sbt" % "0.1.3")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
