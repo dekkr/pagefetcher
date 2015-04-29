@@ -2,10 +2,6 @@ FROM ubuntu
 
 MAINTAINER docker@dekkr.nl
 
-#ENV POSTGRES_DB pagefetcher
-#ENV POSTGRES_USER postgres
-#ENV POSTGRES_PASSWORD postgres
-
 # auto validate license
 RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
 
@@ -25,7 +21,6 @@ RUN apt-get update && apt-get install -y supervisor
 RUN apt-get clean
 
 # Get pagefetcher
-#RUN wget --no-check-certificate https://bintray.com/artifact/download/dekkr/downloads/pagefetcher/pagefetcher-assembly-0.3.1.jar
 RUN wget -P /root https://bintray.com/artifact/download/dekkr/downloads/pagefetcher/pagefetcher-assembly-0.3.1.jar
 
 COPY logback.xml /root/logback.xml
