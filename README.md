@@ -53,3 +53,16 @@ nl.dekkr.pagefetcher {
 }
 ```
 
+## Docker images
+
+Create the image (optional)
+
+```docker build  -t dekkr/pagefetcher:latest ./dockerfiles/postgres```
+
+Start a postgres container
+
+```docker run --name pagefetch-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=pagefetcher -d postgres:latest```
+
+Start the pagefetcher
+
+```docker run -p 8080:8080 -link pagefetch-postgres:localhost -d dekkr/pagefetcher:latest```
