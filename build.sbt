@@ -13,7 +13,6 @@ lazy val root = (project in file(".")).
 libraryDependencies ++= {
   val akkaV = "2.3.10"
   val akkaStreamV = "1.0-M5"
-  val sprayV = "1.3.3"
   val activateVersion = "1.7"
   val scalaLoggingVersion = "3.1.0"
   val slf4jVersion = "1.7.10"
@@ -75,7 +74,7 @@ LsKeys.tags in LsKeys.lsync := (bintray.Keys.packageLabels in bintray.Keys.bintr
 
 externalResolvers in LsKeys.lsync := (resolvers in bintray.Keys.bintray).value
 
-assemblyJarName in assembly := s"pagefetcher-assembly-${version.value}.jar"
+assemblyJarName in assembly := s"${name.value}-assembly-${version.value}.jar"
 
 assemblyMergeStrategy in assembly := {
   case x if x.contains("org/apache/commons/collections") => MergeStrategy.first

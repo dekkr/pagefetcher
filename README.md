@@ -65,4 +65,4 @@ Start a postgres container
 
 Start the pagefetcher
 
-```docker run -p 8080:8080 -link pagefetch-postgres:localhost -d dekkr/pagefetcher:latest```
+```docker run -p 8080:8080 --link pagefetch-postgres:postgres -d dekkr/pagefetcher:latest```
