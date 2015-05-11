@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
   organization := "dekkR projects",
-  version := "0.3.2",
+  version := "0.3.3",
   scalaVersion := "2.11.6"
 )
 

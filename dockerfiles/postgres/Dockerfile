@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y supervisor
 RUN apt-get clean
 
 # Get pagefetcher
-RUN wget -P /root https://bintray.com/artifact/download/dekkr/downloads/pagefetcher/pagefetcher-assembly-0.3.1.jar
+RUN wget -P /root https://bintray.com/artifact/download/dekkr/downloads/pagefetcher/pagefetcher-assembly-0.3.3.jar
 
 COPY logback.xml /root/logback.xml
 
