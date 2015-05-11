@@ -1,6 +1,6 @@
 lazy val commonSettings = Seq(
   organization := "dekkR projects",
-  version := "0.3.1",
+  version := "0.3.2",
   scalaVersion := "2.11.6"
 )
 
@@ -27,7 +27,7 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http-testkit-experimental" % akkaStreamV % "test",
     "commons-validator" % "commons-validator" % "1.4.1",
     "org.jsoup" % "jsoup" % "1.7.2",
-    "org.scalaj" %% "scalaj-http" % "0.3.16",
+    "org.scalaj" %% "scalaj-http" % "1.1.4",
     "org.specs2" %% "specs2-core" % "2.3.13" % "test",
     "net.fwbrasil" %% "activate-core" % activateVersion,
     "net.fwbrasil" %% "activate-prevayler" % activateVersion,

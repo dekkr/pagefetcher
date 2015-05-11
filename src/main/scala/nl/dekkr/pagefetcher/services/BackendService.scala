@@ -7,7 +7,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 import scala.util.{Failure, Success, Try}
-import scalaj.http.Http
+import scalaj.http._
 
 class BackendService(implicit val persistence: ActorRef) extends BackendSystem {
 
@@ -31,10 +31,10 @@ class BackendService(implicit val persistence: ActorRef) extends BackendSystem {
     }
   }
 
-  private def processRequest(request: PageUrl, content: Http.Request): BackendResult = {
+  private def processRequest(request: PageUrl, content: HttpRequest): BackendResult = {
     val rawRequested = request.raw.getOrElse(false)
     try {
-      val rawContent = content.asString
+      val rawContent = content.asString.body
       val result = if (rawRequested) {
         rawContent
       } else {
@@ -64,6 +64,7 @@ class BackendService(implicit val persistence: ActorRef) extends BackendSystem {
     htmlParsed
   }
 
-  private def pageContent(uri: String) = Http(uri).header("User-Agent", USER_AGENT)
+  private def pageContent(uri: String) = Http(uri).option(HttpOptions.followRedirects(shouldFollow = true)).header("User-Agent", USER_AGENT)
 
 }
+
