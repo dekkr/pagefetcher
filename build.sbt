@@ -1,7 +1,7 @@
 lazy val commonSettings = Seq(
   organization := "dekkR projects",
-  version := "0.3.3",
-  scalaVersion := "2.11.6"
+  version := "0.4.0",
+  scalaVersion := "2.11.7"
 )
 
 lazy val root = (project in file(".")).
@@ -11,38 +11,29 @@ lazy val root = (project in file(".")).
   )
 
 libraryDependencies ++= {
-  val akkaV = "2.3.10"
-  val akkaStreamV = "1.0-M5"
-  val activateVersion = "1.7"
+  val akkaV = "2.4.0"
+  val akkaStreamV = "1.0"
   val scalaLoggingVersion = "3.1.0"
-  val slf4jVersion = "1.7.10"
-  val logbackVersion = "1.1.2"
+  val slf4jVersion = "1.7.12"
+  val logbackVersion = "1.1.3"
   Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
     "com.typesafe.akka" %% "akka-stream-experimental" % akkaStreamV,
     "com.typesafe.akka" %% "akka-http-core-experimental" % akkaStreamV,
     "com.typesafe.akka" %% "akka-http-experimental" % akkaStreamV,
-    "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaStreamV,
-    "com.typesafe.akka" %% "akka-http-testkit-experimental" % akkaStreamV % "test",
+    "com.typesafe.slick" %% "slick" % "3.0.0",
     "commons-validator" % "commons-validator" % "1.4.1",
-    "org.jsoup" % "jsoup" % "1.7.2",
+    "org.jsoup" % "jsoup" % "1.8.2",
     "org.scalaj" %% "scalaj-http" % "1.1.4",
     "org.specs2" %% "specs2-core" % "2.3.13" % "test",
-    "net.fwbrasil" %% "activate-core" % activateVersion,
-    "net.fwbrasil" %% "activate-prevayler" % activateVersion,
-    "net.fwbrasil" %% "activate-jdbc" % activateVersion,
-    "net.fwbrasil" %% "activate-mongo" % activateVersion,
     "org.postgresql" % "postgresql" % "9.2-1003-jdbc4",
+    "com.h2database" % "h2" % "1.3.175" % "test",
     "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
     "org.slf4j" % "slf4j-api" % slf4jVersion,
     "ch.qos.logback" % "logback-classic" % logbackVersion
   )
 }
-
-
-
-Revolver.settings
 
 scalacOptions in ThisBuild ++= Seq(Opts.compile.deprecation, Opts.compile.unchecked) ++
   Seq("-Ywarn-unused-import", "-Ywarn-unused", "-Xlint", "-feature")
@@ -75,15 +66,6 @@ LsKeys.tags in LsKeys.lsync := (bintray.Keys.packageLabels in bintray.Keys.bintr
 externalResolvers in LsKeys.lsync := (resolvers in bintray.Keys.bintray).value
 
 assemblyJarName in assembly := s"${name.value}-assembly-${version.value}.jar"
-
-assemblyMergeStrategy in assembly := {
-  case x if x.contains("org/apache/commons/collections") => MergeStrategy.first
-  case x if x.contains("com/esotericsoftware/minlog/") => MergeStrategy.first
-  case x if x.contains("org/xmlpull/v1/XmlPullParser") => MergeStrategy.first
-  case x =>
-    val oldStrategy = (assemblyMergeStrategy in assembly).value
-    oldStrategy(x)
-}
 
 pomExtra :=
   <url>http://dekkr.nl</url>

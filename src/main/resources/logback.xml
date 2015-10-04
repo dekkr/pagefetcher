@@ -7,10 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.reflections.Reflections" level="WARN"/>
-    <logger name="com.zaxxer.hikari.pool.HikariPool" level="WARN"/>
-    <logger name="net.fwbrasil.activate" level="WARN"/>
-
+    <logger name="slick" level="WARN"/>
 
     <root level="DEBUG">
         <appender-ref ref="STDOUT"/>

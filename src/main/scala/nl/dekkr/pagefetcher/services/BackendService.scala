@@ -1,34 +1,44 @@
 package nl.dekkr.pagefetcher.services
 
 import akka.actor.ActorRef
-import nl.dekkr.pagefetcher.actors.StorePage
+import nl.dekkr.pagefetcher.messages.StorePage
 import nl.dekkr.pagefetcher.model._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent._
+import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success, Try}
 import scalaj.http._
 
 class BackendService(implicit val persistence: ActorRef) extends BackendSystem {
 
-
   private val USER_AGENT: String = "Mozilla/5.0)"
   private val CHARSET: String = "UTF-8"
 
-  def getContent(request: PageUrl): BackendResult = {
-    StorageService.read(request) match {
+  def initBackEnd: Try[Unit] = {
+    try {
+      Success(Await.result(StorageService.initStorage, Duration.Inf))
+    } catch {
+      case e: Exception => Failure(e)
+    }
+  }
+
+  def getContent(request: PageUrl, charSet: Option[String] = None, userAgent: Option[String] = None): BackendResult = {
+    Await.result(StorageService.read(request).map {
       case Some(page) =>
         page.content match {
           case Some(content) => ExistingContent(content)
           case None => NoContent()
         }
       case None =>
-        Try(this.pageContent(request.url).charset(CHARSET)) match {
+        Try(collectPageContent(request.url, userAgent.getOrElse(USER_AGENT)).charset(charSet.getOrElse(CHARSET))) match {
           case Success(content) =>
             processRequest(request, content)
           case Failure(e) => Error(s"${e.getMessage}")
         }
-    }
+    }, Duration.Inf)
   }
 
   private def processRequest(request: PageUrl, content: HttpRequest): BackendResult = {
@@ -64,7 +74,7 @@ class BackendService(implicit val persistence: ActorRef) extends BackendSystem {
     htmlParsed
   }
 
-  private def pageContent(uri: String) = Http(uri).option(HttpOptions.followRedirects(shouldFollow = true)).header("User-Agent", USER_AGENT)
+  private def collectPageContent(uri: String, userAgent: String) = Http(uri).option(HttpOptions.followRedirects(shouldFollow = true)).header("User-Agent", userAgent)
 
 }
 

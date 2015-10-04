@@ -7,4 +7,4 @@ import scala.languageFeature.{implicitConversions, postfixOps}
 /**
  * Entity for caching a page
  */
-class PageCache(val uri: String, var content: Option[String] = None, var raw: Boolean = false, var createdAt: Long = OffsetDateTime.now().toEpochSecond) extends StoredPage
+case class PageCache(uri: String, content: Option[String] = None, raw: Boolean = false, createdAt: Long = OffsetDateTime.now().toEpochSecond)

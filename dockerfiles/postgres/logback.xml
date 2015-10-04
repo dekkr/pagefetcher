@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="FILE" class="ch.qos.logback.core.RollingFileAppender">
+        <file>pagefetcher.log</file>.log
+    </file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <maxHistory>30</maxHistory>
+    </rollingPolicy>
         <encoder>
-            <pattern>%cyan(%d{HH:mm:ss.SSS}) %highlight(| %-5level | %-40.40logger{40} | %msg%n)</pattern>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
         </encoder>
     </appender>
-
-    <logger name="org.reflections.Reflections" level="WARN"/>
-    <logger name="com.zaxxer.hikari.pool.HikariPool" level="WARN"/>
-    <logger name="net.fwbrasil.activate" level="WARN"/>
-
+<logger name="slick" level="WARN"/>
 
     <root level="DEBUG">
-        <appender-ref ref="STDOUT"/>
+    <appender-ref ref="FILE"/>
     </root>
 
 </configuration>

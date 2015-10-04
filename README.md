@@ -29,27 +29,27 @@ Example of application.conf
 ```
 nl.dekkr.pagefetcher {
   api {
-    interface = "localhost"
+    interface = 0.0.0.0
     port = 8080
+    timeout = 5 #seconds
   }
   persistence {
     maxStorageAge = 4 #in hours; use 0 to disable automatic purging of old content
-    flavor = "postgres"  # postgres / mongo / prevayler / memory
-    postgres {
-      user = "postgres"
-      password = "postgres"
-      databaseName = "pagefetcher"
-      serverName = "localhost"
-      portNumber = 5432
-    }
-    mongo {
-      host = "localhost"
-      port = 27017
-      db = "db"
-      user = "mongo"
-      password = "mongo"
+    slick = {
+      driver = "slick.driver.PostgresDriver$"
+      db {
+        connectionPool = disabled
+        driver = "org.postgresql.ds.PGSimpleDataSource"
+        url = "jdbc:postgresql://localhostL5432/pagefetcher?user=postgres&password=postgres"
+      }
+      numThreads = 10
     }
   }
+}
+
+
+akka {
+  loglevel = INFO
 }
 ```
 

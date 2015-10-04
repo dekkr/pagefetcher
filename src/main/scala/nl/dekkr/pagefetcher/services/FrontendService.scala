@@ -1,8 +1,7 @@
 package nl.dekkr.pagefetcher.services
 
-import akka.http.model.HttpMethods._
-import akka.http.model.StatusCodes._
-import akka.http.model._
+import akka.http.scaladsl.model.StatusCodes._
+import akka.http.scaladsl.model._
 import nl.dekkr.pagefetcher.model.{NoContent, _}
 
 import scala.language.implicitConversions
@@ -11,7 +10,7 @@ trait FrontendService {
   implicit val backend: BackendSystem
 
   val requestHandler: HttpRequest => HttpResponse = {
-    case HttpRequest(GET, Uri.Path("/"), _, _, _) =>
+    case HttpRequest(HttpMethods.GET, Uri.Path("/"), _, _, _) =>
       HttpResponse(
         entity = HttpEntity(MediaTypes.`text/html`,
           <html>
@@ -25,11 +24,11 @@ trait FrontendService {
           </html>.buildString(stripComments = true)
         ))
 
-    case HttpRequest(GET, uri, _, _, _) if uri.path.startsWith(Uri.Path("/v1/page")) => {
+    case HttpRequest(HttpMethods.GET, uri, _, _, _) if uri.path.startsWith(Uri.Path("/v1/page")) => {
       uri.query.get("url") match {
         case Some(url) =>
           try {
-            backend.getContent(uri) match {
+            backend.getContent(uri, None, None) match {
               case ExistingContent(content) => HttpResponse(entity = HttpEntity(MediaTypes.`text/html`, content))
               case NewContent(content) => HttpResponse(entity = HttpEntity(MediaTypes.`text/html`, content))
               case NoContent() => HttpResponse(NotFound, entity = "Not found")
@@ -42,11 +41,11 @@ trait FrontendService {
             case e: Exception => HttpResponse(BadRequest, entity = s"${e.getMessage}")
           }
         case None =>
-          HttpResponse(NotFound, entity = "Missing url!")
+          HttpResponse(NotFound, entity = "Missing url")
       }
     }
     case _: HttpRequest =>
-      HttpResponse(NotFound, entity = "Unknown resource!")
+      HttpResponse(NotFound, entity = "Unknown resource")
   }
 
   implicit def uri2PageUri(uri: Uri): PageUrl = {

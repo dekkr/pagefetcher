@@ -21,7 +21,9 @@ RUN apt-get update && apt-get install -y supervisor
 RUN apt-get clean
 
 # Get pagefetcher
-RUN wget -P /root https://bintray.com/artifact/download/dekkr/downloads/pagefetcher/pagefetcher-assembly-0.3.3.jar
+RUN wget -P /root/ https://bintray.com/artifact/download/dekkr/downloads/pagefetcher/pagefetcher-assembly-0.4.0.jar
+
+RUN mv /root/pagefetcher-assembly*.jar /root/pagefetcher-assembly.jar
 
 COPY logback.xml /root/logback.xml
 
@@ -32,4 +34,4 @@ COPY application.conf /root/application.conf
 EXPOSE 8080
 
 # Run all parts using a single supervisor command
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord","--configuration=/etc/supervisor/conf.d/supervisord.conf"]

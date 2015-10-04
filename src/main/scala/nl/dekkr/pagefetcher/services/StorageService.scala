@@ -4,17 +4,22 @@ import java.time.OffsetDateTime
 
 import com.typesafe.scalalogging.Logger
 import nl.dekkr.pagefetcher.model.PageUrl
-import nl.dekkr.pagefetcher.persistence.PageCache
-import nl.dekkr.pagefetcher.persistence.persistenceContext._
+import nl.dekkr.pagefetcher.persistence.Tables._
+import nl.dekkr.pagefetcher.persistence.{PageCache, Tables}
 import org.slf4j.LoggerFactory
+import slick.jdbc.meta.MTable
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.language.postfixOps
 
 object StorageService {
 
   private val logger = Logger(LoggerFactory.getLogger("[Page storage]"))
 
-  def read(request: PageUrl): Option[PageCache] = {
+  import dc.driver.api._
+
+  def read(request: PageUrl): Future[Option[PageCache]] = {
     val notBefore: Long = request.maxAge match {
       case Some(minutes) =>
         logger.info(s"read  [url: ${request.url}] [age: $minutes minutes]")
@@ -23,39 +28,36 @@ object StorageService {
         logger.info(s"read  [url: ${request.url}] [age: unspecified]")
         0
     }
-    transactional {
-      val res2 = query {
-        (entity: PageCache) =>
-          where(
-            (entity.uri :== request.url) :&&
-              (entity.raw :== request.raw) :&&
-              (entity.createdAt :>= notBefore)
-          ) select entity orderBy (entity.createdAt desc) limit 1
-      }
-      if (res2.isEmpty) {
-        logger.debug(s"miss  [url: ${request.url}] [raw: ${request.raw.getOrElse(false)}]")
-        None
-      } else {
-        logger.debug(s"hit   [url: ${res2.head.uri}] [raw: ${res2.head.raw}] [age: ${(OffsetDateTime.now().toEpochSecond - res2.head.createdAt) / 60} minutes]")
-        Some(res2.head)
-      }
+    val pageList = Tables.pages.filter(page => page.uri === request.url && page.raw === request.raw && page.created > notBefore).sortBy(_.created.desc).take(1)
+    dc.db.run(pageList.result) map {
+      case rows if rows.nonEmpty =>
+        val row = rows.head
+        Some(PageCache(uri = row.uri, content = row.content, raw = row.raw))
+      case _ => None
     }
   }
 
-  def write(url: String, content: Option[String], raw: Boolean): Unit = {
+  def write(url: String, content: Option[String], raw: Boolean) = {
     logger.info(s"write [url: $url] [raw: $raw]")
-    transactional {
-      new PageCache(uri = url, content = content, raw = raw)
-    }
+    dc.db.run(pages += Page(None, url, content, raw, OffsetDateTime.now().toEpochSecond))
   }
 
-  def deleteOlderThan(nrOfHours: Int): Unit = {
+  def deleteOlderThan(nrOfHours: Int): Future[Int] = {
     val olderThan = OffsetDateTime.now().minusHours(nrOfHours).toEpochSecond
-    transactional {
-      delete {
-        (entity: PageCache) => where(entity.createdAt :< olderThan)
-      }
-    }
+    dc.db.run(oldPagesCompiled(olderThan).delete)
   }
 
+  private def oldPages(maxAge: Rep[Long]) = Tables.pages.filter(_.created < maxAge)
+
+  private val oldPagesCompiled = Compiled(oldPages _)
+
+  def initStorage = {
+    dc.db.run(MTable.getTables) map {
+      case tables: Vector[MTable] if tables.toList.exists(n => n.name.name == Tables.pageTableName) =>
+        logger.info(s"Table ${Tables.pageTableName} exists")
+      case tables =>
+        logger.info(s"Creating table ${Tables.pageTableName}")
+        dc.db.run(pages.schema.create)
+    }
+  }
 }

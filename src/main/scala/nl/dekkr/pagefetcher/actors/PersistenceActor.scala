@@ -2,11 +2,8 @@ package nl.dekkr.pagefetcher.actors
 
 import akka.actor.Actor
 import akka.event.Logging
+import nl.dekkr.pagefetcher.messages.{RemoveOldPages, StorePage}
 import nl.dekkr.pagefetcher.services.StorageService
-
-case class RemoveOldPages(nrOfHours: Int)
-
-case class StorePage(url: String, content: Option[String], raw: Boolean)
 
 class PersistenceActor extends Actor {
 
