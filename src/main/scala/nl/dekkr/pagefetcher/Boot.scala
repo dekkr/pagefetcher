@@ -27,13 +27,15 @@ object Boot extends App with BootedCore with CoreActors with FrontendService wit
 
   logger.info(s"Setting up database connection...")
   backend.initBackEnd match {
-    case Success(_) => logger.info("Database ready")
     case Failure(_) =>
+      logger.error("Database connection failed, shutting down...")
+      system.shutdown()
+    case Success(_) =>
+      logger.info("Database ready")
+      startApi()
+      startHousekeeping()
+      logger.info(s"Done booting...")
   }
-
-  startApi()
-  startHousekeeping()
-  logger.info(s"Done booting...")
 
   def startHousekeeping(): Unit = {
     logger.info(s"Scheduling housekeeping...")

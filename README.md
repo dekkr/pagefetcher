@@ -57,7 +57,7 @@ akka {
 
 Create the image (optional)
 
-```docker build  -t dekkr/pagefetcher:latest ./dockerfiles/postgres```
+```sbt docker:publishLocal```
 
 Start a postgres container
 

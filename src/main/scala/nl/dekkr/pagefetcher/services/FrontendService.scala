@@ -13,7 +13,7 @@ trait FrontendService {
     case HttpRequest(HttpMethods.GET, Uri.Path("/"), _, _, _) =>
       HttpResponse(
         entity = HttpEntity(MediaTypes.`text/html`,
-          <html>
+          """<html>
             <head>
               <title>Page Fetcher by DekkR projects</title>
             </head>
@@ -21,7 +21,7 @@ trait FrontendService {
               <h1>Page Fetcher</h1>
               <p>Ready to serve a page.</p>
             </body>
-          </html>.buildString(stripComments = true)
+          </html>""".stripMargin
         ))
 
     case HttpRequest(HttpMethods.GET, uri, _, _, _) if uri.path.startsWith(Uri.Path("/v1/page")) => {
