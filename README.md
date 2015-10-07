@@ -40,7 +40,7 @@ nl.dekkr.pagefetcher {
       db {
         connectionPool = disabled
         driver = "org.postgresql.ds.PGSimpleDataSource"
-        url = "jdbc:postgresql://localhostL5432/pagefetcher?user=postgres&password=postgres"
+        url = "jdbc:postgresql://localhost:5432/pagefetcher?user=postgres&password=postgres"
       }
       numThreads = 10
     }
